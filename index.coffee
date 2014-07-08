@@ -1,6 +1,16 @@
-global.hostsfile_entry = (ip, [o]..., cb) ->
-  throw 'hostname is required' unless o?.hostname
-  # remove any lines beginning with the same ip
-  execute "sudo sed -i '/#{ip}/d' /etc/hosts", ->
-    # append ip and hostname
-    execute "echo #{ip} #{o.hostname} | sudo tee -a /etc/hosts", cb
+_ = require 'lodash'
+hosts = {}
+
+module.exports = -> _.assign @,
+  hostsfile_entry: (hostnames, [o]..., cb) =>
+    @die "ip is required." unless o?.ip
+    # remember, concatenate, and sort unique hostname assignments between calls
+    hosts = {} if o.reset
+    hosts[o.ip] = if o.override then [] else hosts[o.ip] or []
+    hosts[o.ip] = hosts[o.ip].concat @getNames hostnames
+    hosts[o.ip].sort()
+    hosts[o.ip].unique()
+    # remove any lines referring to the same ip; this prevents duplicates
+    @execute "sed -i '/#{o.ip}/d' /etc/hosts", sudo: true, =>
+      # append ip and hostnames
+      @execute "echo #{o.ip} #{hosts[o.ip].join ' '} | sudo tee -a /etc/hosts >/dev/null", cb
