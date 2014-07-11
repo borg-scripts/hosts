@@ -11,6 +11,6 @@ module.exports = -> _.assign @,
     hosts[o.ip].sort()
     hosts[o.ip].unique()
     # remove any lines referring to the same ip; this prevents duplicates
-    @execute "sed -i '/#{o.ip}/d' /etc/hosts", sudo: true, =>
+    @execute "sed -i '/^#{o.ip}/d' /etc/hosts", sudo: true, =>
       # append ip and hostnames
-      @execute "echo #{o.ip} #{hosts[o.ip].join ' '} | sudo tee -a /etc/hosts >/dev/null", cb
+      @execute "echo #{o.ip} #{hosts[o.ip].join ' '} | sudo tee -a /etc/hosts >/dev/null", @mustExit 0, cb
