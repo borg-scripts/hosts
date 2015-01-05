@@ -2,7 +2,7 @@ _ = require 'lodash'
 hosts = {}
 
 module.exports = -> _.assign @,
-  hostsfile_entry: (hostnames, [o]..., cb) =>
+  hostsfile_entry: (hostnames, [o]...) => (cb) =>
     @die "ip is required." unless o?.ip
     # remember, concatenate, and sort unique hostname assignments between calls
     hosts = {} if o.reset
