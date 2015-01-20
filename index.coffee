@@ -2,8 +2,13 @@ _ = require 'lodash'
 hosts = {}
 
 module.exports = -> _.assign @,
+<<<<<<< Updated upstream
   hostsfile_entry: (hostnames, [o]..., cb) =>
     @die "ip is required." unless o?.ip
+=======
+  hostsfile_entry: (hostnames, [o]...) => @inject_flow =>
+    @die("ip is required.")() unless o?.ip # immediate death
+>>>>>>> Stashed changes
     # remember, concatenate, and sort unique hostname assignments between calls
     hosts = {} if o.reset
     hosts[o.ip] = if o.override then [] else hosts[o.ip] or []
