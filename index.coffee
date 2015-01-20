@@ -3,7 +3,7 @@ hosts = {}
 
 module.exports = -> _.assign @,
   hostsfile_entry: (hostnames, [o]...) => @inject_flow =>
-    @die "ip is required." unless o?.ip
+    @die("ip is required.")() unless o?.ip # immediate death
     # remember, concatenate, and sort unique hostname assignments between calls
     hosts = {} if o.reset
     hosts[o.ip] = if o.override then [] else hosts[o.ip] or []
